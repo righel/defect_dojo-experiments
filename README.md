@@ -1,4 +1,4 @@
-# DefectDojo xperiments
+# DefectDojo Experiments
 
 ### Installation
 1. Install python deps: 
