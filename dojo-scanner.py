@@ -40,12 +40,13 @@ def main():
 
                     run_engagement_preset(
                         preset.data["title"],
+                        engagement["product"],
                         engagement["id"],
                         endpoints
                     )
 
 
-def run_engagement_preset(preset_name, engagement_id, endpoints):
+def run_engagement_preset(preset_name, product_id, engagement_id, endpoints):
     logging.info("Running engagement preset: %s ...", preset_name)
 
     dojo_api = get_dojo_api_client(config)
@@ -62,6 +63,7 @@ def run_engagement_preset(preset_name, engagement_id, endpoints):
 
     preset.run(
         dojo_api,
+        product_id,
         engagement_id,
         preset_name,
         endpoints,
