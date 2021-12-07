@@ -23,9 +23,12 @@ def run(dojo_api, product_id, engagement_id, preset_name, endpoints, config={}):
     targets_file.flush()
 
     # run nmap scan
-    cmd = "nmap -v0 -p http* --script %s -oX %s -iL %s" % (nmap_script, report_file, targets_file.name)
+    cmd = "nmap -v0 -p http* --script %s --script-args=showcves -oX %s -iL %s" % (nmap_script, report_file, targets_file.name)
     logging.debug("Running nmap command: %s", cmd)
     os.system(cmd)
+
+    # hacky replace reports script name to "vulners" so DefectDojo parses it
+    os.system("sed -i 's/script id=\"ms-exchange-version\"/script id=\"vulners\"/g' %s" % report_file)
 
     # upload report DefectDojo
     upload_scan = dojo_api.upload_scan(
@@ -61,7 +64,9 @@ def run(dojo_api, product_id, engagement_id, preset_name, endpoints, config={}):
     for e in parse_report(report_file):
         # push ms exchange version findings to DefectDojo
         endpoint = get_endpoint_id(endpoints, e["host"], e["port"], e["protocol"])
-        if not endpoint:
+
+        # create endpoint if it does not exists
+        if endpoint is None:
             endpoint = dojo_api._request(
                 'POST',
                 'endpoints/',
