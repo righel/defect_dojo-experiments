@@ -23,7 +23,7 @@ def run(dojo_api, product_id, engagement_id, preset_name, endpoints, config={}):
     targets_file.flush()
 
     # run nmap scan
-    cmd = "nmap -v0 -p http* --script %s --script-args=showcves -oX %s -iL %s" % (nmap_script, report_file, targets_file.name)
+    cmd = "nmap -v0 -p https --script %s --script-args=showcves,showcpe,http.max-cache-size=10000000 --max-hostgroup=1 -oX %s -iL %s" % (nmap_script, report_file, targets_file.name)
     logging.debug("Running nmap command: %s", cmd)
     os.system(cmd)
 
